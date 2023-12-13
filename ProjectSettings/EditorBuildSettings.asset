@@ -1,0 +1,14 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1045 &1
+EditorBuildSettings:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Core/Calibration.unity
+    guid: 7f62cb8f7f945c148aba178fac2e76a5
+  - enabled: 1
+    path: Assets/Scenes/UI.unity
+    guid: c95894df0887518449e49191af6a669c
+  m_configObjects: {}

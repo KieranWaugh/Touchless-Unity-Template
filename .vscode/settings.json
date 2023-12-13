@@ -52,5 +52,5 @@
         "Temp/": true
     },
     "dotnet.preferCSharpExtension": true,
-    "dotnet.defaultSolution": "Touchless Template.sln"
+    "dotnet.defaultSolution": "Touchless-Unity-Template.sln"
 }

@@ -132,22 +132,30 @@ public class SetUp : MonoBehaviour
             switch (targetIndex){
                 case 0:
                     T1PH = currentHandPos;
+                    print("Frame - " + T1PH);
+                    print("Hand - " + interactionManager.right_indexTip.transform.position);
                     Settings.top = T1PH;
                     targetIndex++;
                     break;
                 case 1:
                     T2PH = currentHandPos;
                     Settings.right = T2PH;
+                    print("Frame - " + T2PH);
+                    print("Hand - " + interactionManager.right_indexTip.transform.position);
                     targetIndex++;
                     break;
                 case 2:
                     T3PH = currentHandPos;
                     Settings.bottom = T3PH;
+                    print("Frame - " + T3PH);
+                    print("Hand - " + interactionManager.right_indexTip.transform.position);
                     targetIndex++;
                     break;
                 case 3:
                     T4PH = currentHandPos;
                     Settings.left = T4PH;
+                    print("Frame - " + T4PH);
+                    print("Hand - " + interactionManager.right_indexTip.transform.position);
                     targetIndex++;
                     break;
             }

@@ -6,6 +6,7 @@ using Leap.Unity;
 using System;
 using UnityEngine.SceneManagement;
 using System.Linq;
+using Leap.Unity.Attachments;
 
 public enum InteractionType { DirectMap, Ray, ControlDisplayGain, Debug };
 public enum SelectionType{Pinch, AirPush, Dwell}
@@ -42,6 +43,19 @@ public class InteractionManager : MonoBehaviour
     private float maxX, maxY, minX, minY; 
     public bool settingsActive = false;
     private GestureDetector gestureDetector;
+
+    // Hand Locations
+    [SerializeField] private AttachmentHands hand;
+    [SerializeField] public GameObject left_indexTip;
+    [SerializeField] public GameObject left_thumbTip;
+    [SerializeField] public GameObject left_palm;
+    [SerializeField] public GameObject left_pinchPoint;
+
+    [SerializeField] public GameObject right_indexTip;
+    [SerializeField] public GameObject right_thumbTip;
+    [SerializeField] public GameObject right_palm;
+    [SerializeField] public GameObject right_pinchPoint;
+
     // Start is called before the first frame update
     #endregion
 
@@ -56,7 +70,7 @@ public class InteractionManager : MonoBehaviour
 
 
         leapProvider.OnUpdateFrame += OnUpdateFrame;
-        
+       
 
         
 
@@ -174,6 +188,9 @@ public class InteractionManager : MonoBehaviour
         if(frame.Hands.Count != 0 && !settingsActive ){
 
             if((frame.Hands.Count == 1 && frame.Hands[0].GetChirality() == Settings.tracked_hand) || frame.Hands.Count == 2){
+
+                
+
                 LightBarController.SetActive(Settings.enable_light_bar);
                     if(LightBarController != null){
                     LightBarController.GetComponent<LocationController>().updateColour(frame.Hands[0].PalmPosition);
@@ -184,8 +201,8 @@ public class InteractionManager : MonoBehaviour
                 click = false;
 
                 if(Settings.calibrated){
-                    float cursorX = map(frame.GetHand(Settings.tracked_hand).PalmPosition.x, Settings.left.x, Settings.right.x, minX, maxX);
-                    float cursorY = map(frame.GetHand(Settings.tracked_hand).PalmPosition.y, Settings.bottom.y, Settings.top.y, minY, maxY);
+                    float cursorX = map(frame.GetHand(Settings.tracked_hand).GetPinchPosition().x, Settings.left.x, Settings.right.x, minX, maxX);
+                    float cursorY = map(frame.GetHand(Settings.tracked_hand).GetPinchPosition().y, Settings.bottom.y, Settings.top.y, minY, maxY);
                     
                     
                     Vector3 objectPos = new Vector2();
@@ -347,3 +364,27 @@ public class InteractionManager : MonoBehaviour
 
 
 }
+
+//class HandsModule
+//{
+//    private AttachmentHand left;
+//    private AttachmentHand right;
+//    private Hand trackedHand;
+
+//    public HandsModule(AttachmentHand left, AttachmentHand right, Hand trackedHand)
+//    {
+//        this.left = left;
+//        this.right = right;
+//        this.trackedHand = trackedHand;
+//    }
+
+//    public Vector3 getPosition(Chirality chirality, AttachmentPointFlags point)
+//    {
+//        if(chirality == Chirality.Left)
+//        {
+//            Vector3 pos;
+//            Quaternion rot;
+//            left.GetComponent<AttachmentHand>().GetBehaviourForPoint(point).GetLeapHandPointData(trackedHand, point, out pos, out rot);
+//        }
+//    }
+//}

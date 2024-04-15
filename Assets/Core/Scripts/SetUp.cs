@@ -14,6 +14,7 @@ public class SetUp : MonoBehaviour
     [SerializeField] private InteractionManager interactionManager;
     [SerializeField] private Object UI;
     [SerializeField] private GameObject progressBar;
+    private GameObject settings;
     
     private progressBar progressBarController;
     private int targetIndex = 0;
@@ -42,6 +43,7 @@ public class SetUp : MonoBehaviour
 
         if(Settings.calibrated){
             targetIndex = 4;
+            print("calibrated");
         }
         
 
@@ -52,9 +54,11 @@ public class SetUp : MonoBehaviour
         progressBarController = progressBar.GetComponent<progressBar>();
         progressBarController.maxValue = 4;
         progressBarController.currentValue = 1;
-        
 
-        
+        settings = GameObject.FindGameObjectWithTag("Settings");
+
+
+
     }
 
     // Update is called once per frame
@@ -67,10 +71,10 @@ public class SetUp : MonoBehaviour
             targetIndex = 4;
         }
         if(targetIndex == 4){
-            //gameObject.SetActive(false);
+            gameObject.SetActive(false);
             progressBarController.updateBar(targetIndex + 1);
             Settings.calibrated = true;
-            interactionManager.settings.GetComponent<SettingsController>().onChange();
+            interactionManager.settings.GetComponent<SettingsController>().onClose();
             
             
             SceneManager.LoadScene(1);
@@ -157,6 +161,7 @@ public class SetUp : MonoBehaviour
                     print("Frame - " + T4PH);
                     print("Hand - " + interactionManager.right_indexTip.transform.position);
                     targetIndex++;
+
                     break;
             }
             }

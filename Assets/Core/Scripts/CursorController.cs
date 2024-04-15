@@ -43,8 +43,8 @@ public class CursorController : MonoBehaviour
          
     }
 
-    void CursorUpdate(Vector3 position){
-        
+    void CursorUpdate(screenHand positions, Frame frame){
+        var position = new Vector3(0,0,0);
         if (Settings.pointing_method == InteractionType.Debug){
             if(interactionManager.settings.activeInHierarchy){
                 gameObject.transform.localPosition = position;

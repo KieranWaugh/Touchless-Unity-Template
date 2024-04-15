@@ -34,6 +34,8 @@ public class SettingsController : MonoBehaviour
     [SerializeField] TMP_InputField OcclusionOffset;
     [SerializeField] TMP_InputField DwellTime;
     [SerializeField] TMP_InputField Gain;
+    [SerializeField] Slider filter;
+    [SerializeField] TMP_Text filter_Value;
 
     [SerializeField] private GameObject statusGO;
 
@@ -91,6 +93,8 @@ public class SettingsController : MonoBehaviour
         DwellTime.text = Settings.dwell_time.ToString();
         OcclusionOffset.text = Settings.occlusion_offset.ToString();
         Gain.text = Settings.gain.ToString();
+        filter.value = Settings.filter_strength;
+        filter_Value.text = Settings.filter_strength.ToString();
         OnSettingsUpdate?.Invoke(set);
 
         var c = new Controller();
@@ -118,6 +122,11 @@ public class SettingsController : MonoBehaviour
 
     void Update(){
         updateLayout();
+    }
+
+    public void filter_slider_change()
+    {
+        filter_Value.text = filter.value.ToString();
     }
 
     public void onCalibrateClick(){
@@ -148,6 +157,7 @@ public class SettingsController : MonoBehaviour
         int.TryParse(DwellTime.text, out Settings.dwell_time);
         int.TryParse(OcclusionOffset.text, out Settings.occlusion_offset);
         float.TryParse(Gain.text, out Settings.gain);
+        Settings.filter_strength = filter.value;
         
 
     }
@@ -175,6 +185,7 @@ public class SettingsController : MonoBehaviour
         set.dwell_time = Settings.dwell_time;
         set.occlusion_offset = Settings.occlusion_offset;
         set.gain = Settings.gain;
+        set.filter_strength = filter.value;
         var json = JsonUtility.ToJson(set, true);
         print(json);
         File.WriteAllText (Application.persistentDataPath+"/"+ SystemInfo.deviceUniqueIdentifier + ".json", json.ToString());
@@ -210,6 +221,7 @@ public class SettingsController : MonoBehaviour
         Settings.dwell_time =fromFile.dwell_time;
         Settings.occlusion_offset = fromFile.occlusion_offset;
         Settings.gain = fromFile.gain;
+        Settings.filter_strength = fromFile.filter_strength;
     }
 
     public void updateLayout(){
@@ -308,6 +320,7 @@ public class SettingsObject{
         public float airpush_position;
         public int dwell_time;
         public int occlusion_offset;
+        public float filter_strength;
     }
 
 

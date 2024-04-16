@@ -21,9 +21,9 @@ public class PinchDetector : GestureDetector
 
     [Header("Pinch Activation Settings")]
     [Tooltip("The distance between index and thumb at which to enter the pinching state.")]
-    public float activateDistance = Settings.pinch_distance;
+    [SerializeField ]public float activateDistance = Settings.pinch_distance;
     [Tooltip("The distance between index and thumb at which to leave the pinching state.")]
-    public float deactivateDistance = 0.04f;
+    [SerializeField ]public float deactivateDistance = 25;
 
     
 
@@ -40,14 +40,15 @@ public class PinchDetector : GestureDetector
 
     public override void UpdateStatus(Hand hand)
     {
+
+
         if (hand == null)
         {
             return;
         }
 
-        // Convert from mm to m
-        float pinchDistance = hand.PinchDistance * 0.001f;
-        //Debug.Log(pinchDistance);
+        float pinchDistance = hand.PinchDistance;
+        print(pinchDistance);
 
         if (pinchDistance < Settings.pinch_distance)
         {
@@ -60,6 +61,7 @@ public class PinchDetector : GestureDetector
             }
             else
             {
+                
                 OnHeld?.Invoke(hand);
             }
 

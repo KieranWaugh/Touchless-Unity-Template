@@ -8,6 +8,7 @@ TagManager:
   - Canvas
   - Settings
   - ServiceProvider
+  - Cursor
   layers:
   - Default
   - TransparentFX

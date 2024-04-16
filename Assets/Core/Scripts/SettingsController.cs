@@ -36,6 +36,8 @@ public class SettingsController : MonoBehaviour
     [SerializeField] TMP_InputField Gain;
     [SerializeField] Slider filter;
     [SerializeField] TMP_Text filter_Value;
+    [SerializeField] TMP_Dropdown cursor;
+    [SerializeField] List<GameObject> Cursors = new List<GameObject>();
 
     [SerializeField] private GameObject statusGO;
 
@@ -95,6 +97,7 @@ public class SettingsController : MonoBehaviour
         Gain.text = Settings.gain.ToString();
         filter.value = Settings.filter_strength;
         filter_Value.text = Settings.filter_strength.ToString();
+        cursor.value = Settings.cursor_index;
         OnSettingsUpdate?.Invoke(set);
 
         var c = new Controller();
@@ -158,6 +161,8 @@ public class SettingsController : MonoBehaviour
         int.TryParse(OcclusionOffset.text, out Settings.occlusion_offset);
         float.TryParse(Gain.text, out Settings.gain);
         Settings.filter_strength = filter.value;
+        Settings.cursor_index = cursor.value;
+        Settings.cursor = (CursorType)Settings.cursor_index;
         
 
     }
@@ -186,6 +191,8 @@ public class SettingsController : MonoBehaviour
         set.occlusion_offset = Settings.occlusion_offset;
         set.gain = Settings.gain;
         set.filter_strength = filter.value;
+        set.cursor_type_index = cursor.value;
+        set.cursor_type = Settings.cursor;
         var json = JsonUtility.ToJson(set, true);
         print(json);
         File.WriteAllText (Application.persistentDataPath+"/"+ SystemInfo.deviceUniqueIdentifier + ".json", json.ToString());
@@ -222,6 +229,8 @@ public class SettingsController : MonoBehaviour
         Settings.occlusion_offset = fromFile.occlusion_offset;
         Settings.gain = fromFile.gain;
         Settings.filter_strength = fromFile.filter_strength;
+        Settings.cursor_index = fromFile.cursor_type_index;
+        Settings.cursor = fromFile.cursor_type;
     }
 
     public void updateLayout(){
@@ -296,31 +305,39 @@ public class SettingsController : MonoBehaviour
         }
     }
 
-    
+    public void CursorTypeUpdate()
+    {
+        GameObject cursor_obj = GameObject.FindGameObjectWithTag("Cursor");
+        cursor_obj = Instantiate(Resources.Load(Cursors[cursor.value].name)) as GameObject;
+    }
+
+
 }
 
 public class SettingsObject{
 
-        public bool enable_proxemics;
-        public InteractionType pointing_method;
-        public int pointing_method_index;
-        public Chirality tracked_hand;
-        public int tracked_hand_index;
-        public SelectionType gesture;
-        public int gesture_index;
-        public bool calibrated;
-        public Vector2 top, bottom, left, right;
-        public bool enable_light_bar;
-        public bool enable_tracking_lost;
-        public bool enable_widget_outline;
-        public bool enable_widget_click_feedback;
-        public bool enable_logging;
-        public float gain;
-        public float pinch_distance;
-        public float airpush_position;
-        public int dwell_time;
-        public int occlusion_offset;
-        public float filter_strength;
-    }
+    public bool enable_proxemics;
+    public InteractionType pointing_method;
+    public int pointing_method_index;
+    public Chirality tracked_hand;
+    public int tracked_hand_index;
+    public SelectionType gesture;
+    public int gesture_index;
+    public bool calibrated;
+    public Vector2 top, bottom, left, right;
+    public bool enable_light_bar;
+    public bool enable_tracking_lost;
+    public bool enable_widget_outline;
+    public bool enable_widget_click_feedback;
+    public bool enable_logging;
+    public float gain;
+    public float pinch_distance;
+    public float airpush_position;
+    public int dwell_time;
+    public int occlusion_offset;
+    public float filter_strength;
+    public int cursor_type_index;
+    public CursorType cursor_type;
+}
 
 

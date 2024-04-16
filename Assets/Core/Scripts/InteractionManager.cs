@@ -10,6 +10,7 @@ using Leap.Unity.Attachments;
 
 public enum InteractionType { DirectMap, Ray, ControlDisplayGain, Debug };
 public enum SelectionType{Pinch, AirPush, Dwell}
+public enum CursorType {Standard, FingerThumb, Radial }
 public enum TrackedPosition { PinchPoint, Index, Palm };
 public class InteractionManager : MonoBehaviour
 {
@@ -27,6 +28,7 @@ public class InteractionManager : MonoBehaviour
     [SerializeField] private int occlusionOffset = Settings.occlusion_offset;
     public bool gesture = false;
     public bool click = false;
+    
     public  bool held;
     private Controller c;
     private bool calledFirstUpdate = false;
@@ -60,8 +62,10 @@ public class InteractionManager : MonoBehaviour
     [SerializeField] public GameObject right_palm;
     [SerializeField] public GameObject right_pinchPoint;
 
-    private KalmanFilter kalman;
-    
+    private KalmanFilter pinch_kalman;
+    private KalmanFilter index_kalman;
+    private KalmanFilter thumb_kalman;
+    private KalmanFilter palm_kalman;
 
 
     // Start is called before the first frame update
@@ -114,8 +118,11 @@ public class InteractionManager : MonoBehaviour
         LightBarController.SetActive(Settings.enable_light_bar);
         updateInteractions();
 
-        kalman = new KalmanFilter(Mathf.Pow(10, -Settings.filter_strength), 0.001f);
-        
+        pinch_kalman = new KalmanFilter(Mathf.Pow(10, -Settings.filter_strength), 0.001f);
+        index_kalman = new KalmanFilter(Mathf.Pow(10, -Settings.filter_strength), 0.001f);
+        thumb_kalman = new KalmanFilter(Mathf.Pow(10, -Settings.filter_strength), 0.001f);
+        palm_kalman = new KalmanFilter(Mathf.Pow(10, -Settings.filter_strength), 0.001f);
+
     }
 
   
@@ -207,13 +214,21 @@ public class InteractionManager : MonoBehaviour
 
     void OnUpdateFrame(Frame frame)
     {
+
+
         if(frame.CurrentFramesPerSecond == 0f)
         {
+            trackingLost.SetActive(false);
             dataLost.SetActive(true);
+        }
+        else
+        {
+            dataLost.SetActive(false);
         }
 
         if (frame.Hands.Count != 0 && !settingsActive ){
             dataLost.SetActive(false);
+            
             if((frame.Hands.Count == 1 && frame.Hands[0].GetChirality() == Settings.tracked_hand) || frame.Hands.Count == 2){
 
                 
@@ -394,27 +409,34 @@ public class InteractionManager : MonoBehaviour
     public screenHand getScreenPositions(Frame frame)
     {
         var PinchPoint = new Vector3(map(frame.GetHand(Settings.tracked_hand).GetPredictedPinchPosition().x, Settings.left.x, Settings.right.x, minX, maxX), map(frame.GetHand(Settings.tracked_hand).GetPredictedPinchPosition().y, Settings.bottom.y, Settings.top.y, minY, maxY));
-        var Index = new Vector3(map(frame.GetHand(Settings.tracked_hand).GetIndex().TipPosition.x, Settings.left.x, Settings.right.x, minX, maxX), map(frame.GetHand(Settings.tracked_hand).GetIndex().TipPosition.x, Settings.bottom.y, Settings.top.y, minY, maxY));
-        var Thumb = new Vector3(map(frame.GetHand(Settings.tracked_hand).GetThumb().TipPosition.x, Settings.left.x, Settings.right.x, minX, maxX), map(frame.GetHand(Settings.tracked_hand).GetThumb().TipPosition.x, Settings.bottom.y, Settings.top.y, minY, maxY));
+        var Index = new Vector3(map(frame.GetHand(Settings.tracked_hand).GetIndex().TipPosition.x, Settings.left.x, Settings.right.x, minX, maxX), map(frame.GetHand(Settings.tracked_hand).GetIndex().TipPosition.y, Settings.bottom.y, Settings.top.y, minY, maxY));
+        var Thumb = new Vector3(map(frame.GetHand(Settings.tracked_hand).GetThumb().TipPosition.x, Settings.left.x, Settings.right.x, minX, maxX), map(frame.GetHand(Settings.tracked_hand).GetThumb().TipPosition.y, Settings.bottom.y, Settings.top.y, minY, maxY));
         var Palm = new Vector3(map(frame.GetHand(Settings.tracked_hand).PalmPosition.x, Settings.left.x, Settings.right.x, minX, maxX), map(frame.GetHand(Settings.tracked_hand).PalmPosition.y, Settings.bottom.y, Settings.top.y, minY, maxY));
         var offset = Settings.occlusion_offset;
-        print(PinchPoint);
 
         if(Settings.tracked_hand == Chirality.Right)
         {
             offset = -1 * offset;
         }
 
-        
-        screen_positions.PinchPoint = kalman.UpdateFilter(new Vector3(Mathf.Clamp(PinchPoint.x + Settings.occlusion_offset, minX, maxX), Mathf.Clamp(PinchPoint.y, minY, maxY), 0), Mathf.Pow(10, -Settings.filter_strength), 0.001f);
-        screen_positions.Index = kalman.UpdateFilter(new Vector3(Mathf.Clamp(Index.x + Settings.occlusion_offset, minX, maxX), Mathf.Clamp(Index.y, minY, maxY), 0), Mathf.Pow(10, -Settings.filter_strength), 0.001f);
-        screen_positions.Thumb = kalman.UpdateFilter(new Vector3(Mathf.Clamp(Thumb.x + Settings.occlusion_offset, minX, maxX), Mathf.Clamp(Thumb.y, minY, maxY), 0), Mathf.Pow(10, -Settings.filter_strength), 0.001f);
-        screen_positions.Palm = kalman.UpdateFilter(new Vector3(Mathf.Clamp(Palm.x + Settings.occlusion_offset, minX, maxX), Mathf.Clamp(Palm.y, minY, maxY), 0), Mathf.Pow(10, -Settings.filter_strength), 0.001f);
+
+        screen_positions.PinchPoint = pinch_kalman.UpdateFilter(new Vector3(Mathf.Clamp(PinchPoint.x + Settings.occlusion_offset, minX, maxX), Mathf.Clamp(PinchPoint.y, minY, maxY), 0), Mathf.Pow(10, -Settings.filter_strength), 0.001f);
+        screen_positions.Index = index_kalman.UpdateFilter(new Vector3(Mathf.Clamp(Index.x + Settings.occlusion_offset, minX, maxX), Mathf.Clamp(Index.y, minY, maxY), 0), Mathf.Pow(10, -Settings.filter_strength), 0.001f);
+        screen_positions.Thumb = thumb_kalman.UpdateFilter(new Vector3(Mathf.Clamp(Thumb.x + Settings.occlusion_offset, minX, maxX), Mathf.Clamp(Thumb.y, minY, maxY), 0), Mathf.Pow(10, -Settings.filter_strength), 0.001f);
+        screen_positions.Palm = palm_kalman.UpdateFilter(new Vector3(Mathf.Clamp(Palm.x + Settings.occlusion_offset, minX, maxX), Mathf.Clamp(Palm.y, minY, maxY), 0), Mathf.Pow(10, -Settings.filter_strength), 0.001f);
+
+        //screen_positions.PinchPoint = PinchPoint;
+        //screen_positions.Index = Index;
+        //screen_positions.Thumb = Thumb;
+        //screen_positions.Palm = Palm;
+
         return screen_positions;
 
     }
 
     
+
+
 
 
 }

@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class CursorStandard : Cursor
 {
+    
     public override void activateGesature()
     {
         gameObject.GetComponentInChildren<RectTransform>().sizeDelta = new Vector2(20, 20);

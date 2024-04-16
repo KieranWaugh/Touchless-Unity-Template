@@ -18,13 +18,14 @@ public static class Settings
     [SerializeField] public static bool calibrated = false;
     [SerializeField] public static Vector2 top, bottom, left, right;
     [SerializeField] public static float gain = 1;
-    [SerializeField] public static float pinch_distance = 0.04f;
+    [SerializeField] public static float pinch_distance = 30;
     [SerializeField] public static float airpush_position = -0.1f;
     [SerializeField] public static int dwell_time = 300;
     [SerializeField] public static int occlusion_offset = 0;
     [SerializeField] public static float filter_strength;
     [SerializeField] public static TrackedPosition tracked_point = TrackedPosition.PinchPoint;
-
+    [SerializeField] public static CursorType cursor = CursorType.Standard;
+    [SerializeField] public static int cursor_index;
     #endregion
 
     #region UI Feedback

@@ -9,6 +9,7 @@ public abstract class Cursor : MonoBehaviour
 {
     [SerializeField] protected InteractionManager interactionManager;
     [SerializeField] private Camera cam;
+    
     protected bool gestureDetector;
 
     void OnEnable()
@@ -33,6 +34,8 @@ public abstract class Cursor : MonoBehaviour
     {
 
     }
+
+    
 
     public void CursorUpdate(screenHand positions, Frame frame)
     {

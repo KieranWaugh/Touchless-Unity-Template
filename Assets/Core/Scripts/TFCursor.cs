@@ -19,6 +19,11 @@ public class TFCursor : Cursor
         throw new System.NotImplementedException();
     }
 
+    private void Start()
+    {
+        cursorType = CursorType.FingerThumb;
+    }
+
     public override void updatePositions(screenHand positions, Frame frame)
     {
         var pos_pp = positions.PinchPoint;

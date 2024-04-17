@@ -9,31 +9,24 @@ public abstract class Cursor : MonoBehaviour
 {
     [SerializeField] protected InteractionManager interactionManager;
     [SerializeField] private Camera cam;
-    
+    public CursorType cursorType;
+
     protected bool gestureDetector;
 
     void OnEnable()
     {
         interactionManager = GameObject.Find("Service Provider").GetComponent<InteractionManager>();
         interactionManager.CursorUpdate += CursorUpdate;
-        
-
-
-    }
-
-    void Start()
-    {
         if (interactionManager == null)
         {
             SceneManager.LoadScene(0);
         }
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
+
 
     }
+
+    
 
     
 

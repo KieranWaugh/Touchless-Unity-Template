@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CursorManager : MonoBehaviour
 {
-    public Dictionary<CursorType, GameObject> Cursors = new Dictionary<CursorType, GameObject>();
+    public List<GameObject> cursors = new List<GameObject>();
 
     // Start is called before the first frame update
     void Start()
@@ -15,10 +15,14 @@ public class CursorManager : MonoBehaviour
     // Update is called once per frame
     public void updateCursor(CursorType type)
     {
-        foreach (GameObject cursor in Cursors.Values)
+        print(type.ToString());
+        foreach (GameObject cursor in cursors)
         {
             cursor.SetActive(false);
+            if(cursor.GetComponent<Cursor>().cursorType == type)
+            {
+                cursor.SetActive(true);
+            }
         }
-        Cursors[type].SetActive(true);
     }
 }

@@ -11,6 +11,11 @@ public class CursorStandard : Cursor
         gameObject.GetComponentInChildren<RectTransform>().sizeDelta = new Vector2(20, 20);
     }
 
+    private void Start()
+    {
+        cursorType = CursorType.Standard;
+    }
+
     public override void deactivateGesature()
     {
         gameObject.GetComponentInChildren<RectTransform>().sizeDelta = new Vector2(30, 30);

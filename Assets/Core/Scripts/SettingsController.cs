@@ -307,8 +307,9 @@ public class SettingsController : MonoBehaviour
 
     public void CursorTypeUpdate()
     {
-        GameObject cursor_obj = GameObject.FindGameObjectWithTag("Cursor");
-        cursor_obj = Instantiate(Resources.Load(Cursors[cursor.value].name)) as GameObject;
+        Settings.cursor_index = cursor.value;
+        var list_cursor = GameObject.FindGameObjectWithTag("Cursor");
+        list_cursor.GetComponent<CursorManager>().updateCursor((CursorType)Settings.cursor_index);
     }
 
 

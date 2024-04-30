@@ -14,10 +14,7 @@ public class CursorManager : MonoBehaviour
     {
         interactionManager = GameObject.Find("Service Provider").GetComponent<InteractionManager>();
         updateCursor(Settings.cursor);
-        if (!Settings.ran_calibration_scene)
-        {
-            SceneManager.LoadScene(0);
-        }
+        
         
     }
 

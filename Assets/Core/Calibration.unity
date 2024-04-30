@@ -2174,6 +2174,10 @@ PrefabInstance:
       propertyPath: m_text
       value: Right
       objectReference: {fileID: 0}
+    - target: {fileID: 1077931429244460958, guid: 243d19be04b5c4544b72e137e40e2e58, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1089193477384739652, guid: 243d19be04b5c4544b72e137e40e2e58, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0

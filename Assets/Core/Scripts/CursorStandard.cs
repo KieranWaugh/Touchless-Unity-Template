@@ -14,6 +14,8 @@ public class CursorStandard : Cursor
     private void Start()
     {
         cursorType = CursorType.Standard;
+        InteractionPoint = gameObject;
+        cursorManager.cursors.Add(gameObject);
     }
 
     public override void deactivateGesature()
@@ -40,14 +42,14 @@ public class CursorStandard : Cursor
             }
 
         }
-        else if (Settings.pointing_method == InteractionType.ControlDisplayGain)
-        {
-            print(position);
-            position = Settings.gain * position;
-            print(Settings.gain);
-            gameObject.transform.localPosition = position;
+        //else if (Settings.pointing_method == InteractionType.ControlDisplayGain)
+        //{
+        //    print(position);
+        //    position = Settings.gain * position;
+        //    print(Settings.gain);
+        //    gameObject.transform.localPosition = position;
          
-        }
+        //}
 
         else
         {

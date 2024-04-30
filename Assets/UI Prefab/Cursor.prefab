@@ -11,8 +11,8 @@ GameObject:
   - component: {fileID: 7242673166241443709}
   - component: {fileID: 5217668885599772070}
   - component: {fileID: 8939685516923864228}
-  - component: {fileID: 9022583149313737829}
   - component: {fileID: 4468783255790651229}
+  - component: {fileID: 1600125392741692229}
   m_Layer: 5
   m_Name: Cursor
   m_TagString: Untagged
@@ -35,10 +35,10 @@ RectTransform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.48800004}
-  m_AnchorMax: {x: 0.50600004, y: 0.5}
-  m_AnchoredPosition: {x: -6, y: 6}
-  m_SizeDelta: {x: 13, y: 13}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 5.5, y: -7}
+  m_SizeDelta: {x: 30, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5217668885599772070
 CanvasRenderer:
@@ -78,19 +78,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!135 &9022583149313737829
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5247342708641711953}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 10
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &4468783255790651229
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -105,3 +92,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   interactionManager: {fileID: 0}
   cam: {fileID: 0}
+  cursorType: 0
+  InteractionPoint: {fileID: 0}
+--- !u!58 &1600125392741692229
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5247342708641711953}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 13

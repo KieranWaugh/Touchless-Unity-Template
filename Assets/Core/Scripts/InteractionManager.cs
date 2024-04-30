@@ -10,7 +10,6 @@ using Leap.Unity.Attachments;
 
 public enum InteractionType { DirectMap, Ray, ControlDisplayGain, Debug };
 public enum SelectionType{Pinch, AirPush, Dwell}
-public enum CursorType {Standard, FingerThumb, Radial }
 public enum TrackedPosition { PinchPoint, Index, Palm };
 public class InteractionManager : MonoBehaviour
 {
@@ -49,6 +48,7 @@ public class InteractionManager : MonoBehaviour
     private float maxX, maxY, minX, minY; 
     public bool settingsActive = false;
     private GestureDetector gestureDetector;
+    public GameObject cursor; // used to identify the cursor part of the cursors
 
     // Hand Locations
     [SerializeField] private AttachmentHands hand;
@@ -134,6 +134,8 @@ public class InteractionManager : MonoBehaviour
         }
 
         if(Settings.pointing_method == InteractionType.Debug){
+            Settings.cursor = CursorType.Standard;
+            Settings.enable_tracking_lost = false;
             var mp = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 0));
             Vector3 objectPos = new Vector2
             {
@@ -141,6 +143,7 @@ public class InteractionManager : MonoBehaviour
                 y = Mathf.Clamp(mp.y, minY, maxY)
             };
             if (!settingsActive){
+                screen_positions.PinchPoint = objectPos;
                 CursorUpdate?.Invoke(screen_positions, null);
             }
             
@@ -219,7 +222,11 @@ public class InteractionManager : MonoBehaviour
         if(frame.CurrentFramesPerSecond == 0f)
         {
             trackingLost.SetActive(false);
-            dataLost.SetActive(true);
+            if(Settings.pointing_method != InteractionType.Debug)
+            {
+                dataLost.SetActive(true);
+            }
+            
         }
         else
         {
@@ -243,35 +250,6 @@ public class InteractionManager : MonoBehaviour
                 click = false;
 
                 if(Settings.calibrated){
-                    //float cursorX = map(frame.GetHand(Settings.tracked_hand).GetPredictedPinchPosition().x, Settings.left.x, Settings.right.x, minX, maxX);
-                    //float cursorY = map(frame.GetHand(Settings.tracked_hand).GetPredictedPinchPosition().y, Settings.bottom.y, Settings.top.y, minY, maxY);             
-
-                    //Vector3 objectPos = new Vector2();
-                    //if(!settingsActive){
-                    //    switch(Settings.tracked_hand){ 
-                    //    case Chirality.Right:
-                    //        objectPos = new Vector2
-                    //        {
-                    //            // Constrain the object's position to the boundaries of the canvas
-                    //            x = Mathf.Clamp(cursorX - Settings.occlusion_offset, minX, maxX),
-                    //            y = Mathf.Clamp(cursorY, minY, maxY)
-                    //        };
-
-                    //        break;
-                    //    case Chirality.Left:
-                    //        objectPos = new Vector2
-                    //        {
-                    //            // Constrain the object's position to the boundaries of the canvas
-                    //            x = Mathf.Clamp(cursorX + Settings.occlusion_offset, minX, maxX),
-                    //            y = Mathf.Clamp(cursorY, minY, maxY)
-                    //        };
-                    //        //CursorUpdate?.Invoke(new Vector3(objectPos.x, objectPos.y,0));
-                    //        break;
-                    //}
-
-                    //    var filtered = kalman.UpdateFilter(new Vector3(objectPos.x, objectPos.y, 0), Mathf.Pow(10, -Settings.filter_strength), 0.001f);
-                    //    CursorUpdate?.Invoke(new Vector3(filtered.x, filtered.y, 0), frame);
-                    //}
                     getScreenPositions(frame);
                     CursorUpdate?.Invoke(screen_positions, frame);
 
@@ -308,6 +286,11 @@ public class InteractionManager : MonoBehaviour
 
     public void addWidget(GameObject widget){
         widgets.Add(widget);
+    }
+
+    public void setCursor(GameObject trackedPos)
+    {
+        cursor = trackedPos;
     }
 
     void OnGesture(Hand hand){
@@ -408,6 +391,13 @@ public class InteractionManager : MonoBehaviour
 
     public screenHand getScreenPositions(Frame frame)
     {
+        float gain = 1f;
+
+        if(Settings.pointing_method == InteractionType.ControlDisplayGain)
+        {
+            gain = Settings.gain;
+        }
+
         var PinchPoint = new Vector3(map(frame.GetHand(Settings.tracked_hand).GetPredictedPinchPosition().x, Settings.left.x, Settings.right.x, minX, maxX), map(frame.GetHand(Settings.tracked_hand).GetPredictedPinchPosition().y, Settings.bottom.y, Settings.top.y, minY, maxY));
         var Index = new Vector3(map(frame.GetHand(Settings.tracked_hand).GetIndex().TipPosition.x, Settings.left.x, Settings.right.x, minX, maxX), map(frame.GetHand(Settings.tracked_hand).GetIndex().TipPosition.y, Settings.bottom.y, Settings.top.y, minY, maxY));
         var Thumb = new Vector3(map(frame.GetHand(Settings.tracked_hand).GetThumb().TipPosition.x, Settings.left.x, Settings.right.x, minX, maxX), map(frame.GetHand(Settings.tracked_hand).GetThumb().TipPosition.y, Settings.bottom.y, Settings.top.y, minY, maxY));
@@ -420,10 +410,10 @@ public class InteractionManager : MonoBehaviour
         }
 
 
-        screen_positions.PinchPoint = pinch_kalman.UpdateFilter(new Vector3(Mathf.Clamp(PinchPoint.x + Settings.occlusion_offset, minX, maxX), Mathf.Clamp(PinchPoint.y, minY, maxY), 0), Mathf.Pow(10, -Settings.filter_strength), 0.001f);
-        screen_positions.Index = index_kalman.UpdateFilter(new Vector3(Mathf.Clamp(Index.x + Settings.occlusion_offset, minX, maxX), Mathf.Clamp(Index.y, minY, maxY), 0), Mathf.Pow(10, -Settings.filter_strength), 0.001f);
-        screen_positions.Thumb = thumb_kalman.UpdateFilter(new Vector3(Mathf.Clamp(Thumb.x + Settings.occlusion_offset, minX, maxX), Mathf.Clamp(Thumb.y, minY, maxY), 0), Mathf.Pow(10, -Settings.filter_strength), 0.001f);
-        screen_positions.Palm = palm_kalman.UpdateFilter(new Vector3(Mathf.Clamp(Palm.x + Settings.occlusion_offset, minX, maxX), Mathf.Clamp(Palm.y, minY, maxY), 0), Mathf.Pow(10, -Settings.filter_strength), 0.001f);
+        screen_positions.PinchPoint = pinch_kalman.UpdateFilter(new Vector3(Mathf.Clamp(PinchPoint.x + Settings.occlusion_offset, minX, maxX), Mathf.Clamp(PinchPoint.y, minY, maxY), 0), Mathf.Pow(10, -Settings.filter_strength), 0.001f) * gain;
+        screen_positions.Index = index_kalman.UpdateFilter(new Vector3(Mathf.Clamp(Index.x + Settings.occlusion_offset, minX, maxX), Mathf.Clamp(Index.y, minY, maxY), 0), Mathf.Pow(10, -Settings.filter_strength), 0.001f) * gain;
+        screen_positions.Thumb = thumb_kalman.UpdateFilter(new Vector3(Mathf.Clamp(Thumb.x + Settings.occlusion_offset, minX, maxX), Mathf.Clamp(Thumb.y, minY, maxY), 0), Mathf.Pow(10, -Settings.filter_strength), 0.001f) * gain;
+        screen_positions.Palm = palm_kalman.UpdateFilter(new Vector3(Mathf.Clamp(Palm.x + Settings.occlusion_offset, minX, maxX), Mathf.Clamp(Palm.y, minY, maxY), 0), Mathf.Pow(10, -Settings.filter_strength), 0.001f) * gain;
 
         //screen_positions.PinchPoint = PinchPoint;
         //screen_positions.Index = Index;

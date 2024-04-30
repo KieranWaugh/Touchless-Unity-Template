@@ -38,7 +38,8 @@ public class ButtonController : Widget
     }
 
     public void SendClick(GameObject button){
-        buttonPress.Invoke(button);
+        print(button);
+        buttonPress?.Invoke(button);
     }
 
    
@@ -67,9 +68,13 @@ public class ButtonController : Widget
     {
         if (!Settings.enable_proxemics)
         {
-            if (cursor.transform.localPosition.x >= transform.localPosition.x - width / 2 && cursor.transform.localPosition.x <= transform.localPosition.x + width / 2 &&
-                cursor.transform.localPosition.y >= transform.localPosition.y - height / 2 && cursor.transform.localPosition.y <= transform.localPosition.y + height / 2)
+            //print("cursor - " + cursor.transform.position);
+            //print(gameObject.name + " - " + transform.position);
+            //if (cursor.transform.position.x >= transform.position.x - width / 2 && cursor.transform.position.x <= transform.position.x + width / 2 &&
+            //  cursor.transform.position.y >= transform.position.y - height / 2 && cursor.transform.position.y <= transform.position.y + height / 2)
+            if (overlap)
             {
+                //print("overlap " + gameObject.name);
                 return -2;
 
             }
@@ -86,6 +91,8 @@ public class ButtonController : Widget
         
     }
 
+    
+
     public override void setTarget(bool flag)
     {
         if (flag){
@@ -97,6 +104,20 @@ public class ButtonController : Widget
             target = false;
             GetComponentInChildren<Image>().color = Color;
         }
+    }
+
+    void OnTriggerEnter2D(Collider2D col)
+    {
+        if(col.gameObject.transform.parent.gameObject.tag == "Cursor")
+        {
+            overlap = true;
+        }
+        
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        overlap = false;
     }
 
     public override void SetColour(Color color)

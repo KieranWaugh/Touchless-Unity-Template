@@ -10,23 +10,26 @@ public abstract class Cursor : MonoBehaviour
     [SerializeField] protected InteractionManager interactionManager;
     [SerializeField] private Camera cam;
     public CursorType cursorType;
+    public GameObject InteractionPoint;
+    protected Collider2D collider;
+    protected CursorManager cursorManager;
 
     protected bool gestureDetector;
 
     void OnEnable()
     {
         interactionManager = GameObject.Find("Service Provider").GetComponent<InteractionManager>();
+        cursorManager = GameObject.Find("Cursor").GetComponent<CursorManager>();
         interactionManager.CursorUpdate += CursorUpdate;
         if (interactionManager == null)
         {
             SceneManager.LoadScene(0);
         }
 
-
+        collider = gameObject.GetComponentInChildren<CircleCollider2D>();
+        collider.GetComponent<CircleCollider2D>().radius = InteractionPoint.GetComponent<RectTransform>().sizeDelta[0] / 2;
 
     }
-
-    
 
     
 

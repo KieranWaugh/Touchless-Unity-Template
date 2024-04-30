@@ -12,13 +12,24 @@ public class RadialCursor : Cursor
     [SerializeField] GameObject pinchpoint;
     private bool pinching = false;
 
-    private void Start()
+    private void Awake()
     {
+       
         cursorType = CursorType.Radial;
+        InteractionPoint = pinchpoint;
+        
+
+        
+    }
+    void Start()
+    {
+        cursorManager.cursors.Add(gameObject);
+        print(cursorManager.cursors);
     }
     public override void activateGesature()
     
     {
+        
         pinching = true;
         
     }
@@ -30,9 +41,8 @@ public class RadialCursor : Cursor
 
     public override void updatePositions(screenHand positions, Frame frame)
     {
-        print("here");
         gameObject.transform.localPosition = positions.getTrackedPosition(Settings.tracked_point);
-        if (!pinching)
+        if (!pinching && Settings.pointing_method != InteractionType.Debug)
         {
             ring.GetComponent<RectTransform>().sizeDelta = new Vector2(updateRing(frame), updateRing(frame));
         }

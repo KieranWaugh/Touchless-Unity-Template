@@ -11,18 +11,17 @@ public class TFCursor : Cursor
 
     public override void activateGesature()
     {
-        throw new System.NotImplementedException();
     }
 
     public override void deactivateGesature()
     {
-        throw new System.NotImplementedException();
     }
 
-    private void Start()
+    private void Awake()
     {
-        cursorType = CursorType.FingerThumb;
+        InteractionPoint = pinchPoint;
     }
+    
 
     public override void updatePositions(screenHand positions, Frame frame)
     {

@@ -6,6 +6,7 @@ using UnityEngine;
 public static class Settings
 {
     public static SettingsController controller;
+    public static bool ran_calibration_scene = false;
     #region Interaction Parameters
 
     [SerializeField] public static bool enable_proxemics = false;
@@ -33,6 +34,7 @@ public static class Settings
     [SerializeField] public static bool enable_tracking_lost = true;
     [SerializeField] public static bool enable_widget_outline = true;
     [SerializeField] public static bool enable_widget_click_feedback = true;
+   
 
     #endregion
 

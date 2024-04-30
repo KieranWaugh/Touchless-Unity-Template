@@ -11,6 +11,7 @@ using UnityEngine;
 using UnityEngine.Animations;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using System.Linq;
 
 public class SettingsController : MonoBehaviour
 {
@@ -97,6 +98,18 @@ public class SettingsController : MonoBehaviour
         Gain.text = Settings.gain.ToString();
         filter.value = Settings.filter_strength;
         filter_Value.text = Settings.filter_strength.ToString();
+
+        cursor.ClearOptions();
+        int enumSize = System.Enum.GetValues(typeof(CursorType)).Length;
+        List<TMP_Dropdown.OptionData> data = new List<TMP_Dropdown.OptionData>();
+        for (int i = 0; i < enumSize; i++)
+        {
+            TMP_Dropdown.OptionData newData = new TMP_Dropdown.OptionData();
+            newData.text = ((CursorType)i).ToString();
+            data.Add(newData);
+        }
+        print(data);
+        cursor.AddOptions(data);
         cursor.value = Settings.cursor_index;
         OnSettingsUpdate?.Invoke(set);
 

@@ -31,6 +31,7 @@ public abstract class Widget : MonoBehaviour
 	protected PinchDetector pinchDetector;
 	protected GameObject cursor;
 	protected Vector2 prevPosition;
+	protected bool overlap = false;
 
 
     private void Awake()
@@ -41,6 +42,7 @@ public abstract class Widget : MonoBehaviour
 		{
 			SceneManager.LoadScene(0);
 		}
+		
 	}
 
 	// Start is called before the first frame update
@@ -50,7 +52,7 @@ public abstract class Widget : MonoBehaviour
 		width = gameObject.GetComponent<RectTransform>().sizeDelta.x;
 		height = gameObject.GetComponent<RectTransform>().sizeDelta.y;
 		interactionManager.addWidget(gameObject);
-		cursor = GameObject.Find("UI/Cursor");
+		
 		prevPosition = Vector2.zero;
 		SetColour(Color);
 
@@ -60,7 +62,8 @@ public abstract class Widget : MonoBehaviour
 	// called once per frame
 	protected void Update()
 	{
-		if(widgetActive){
+		cursor = interactionManager.cursor;
+		if (widgetActive){
 			distance = getCursorDistance();
 		}else{
 			distance = -1;

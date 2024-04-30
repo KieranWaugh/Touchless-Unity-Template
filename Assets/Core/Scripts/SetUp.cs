@@ -75,8 +75,8 @@ public class SetUp : MonoBehaviour
             progressBarController.updateBar(targetIndex + 1);
             Settings.calibrated = true;
             interactionManager.settings.GetComponent<SettingsController>().onClose();
-            
-            
+
+            Settings.ran_calibration_scene = true;
             SceneManager.LoadScene(1);
         }
 

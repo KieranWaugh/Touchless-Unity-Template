@@ -48,6 +48,7 @@ public class PinchDetector : GestureDetector
         }
 
         float pinchDistance = hand.PinchDistance;
+        print(pinchDistance);
 
         if (pinchDistance < Settings.pinch_distance)
         {

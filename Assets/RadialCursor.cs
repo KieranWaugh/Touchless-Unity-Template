@@ -57,6 +57,6 @@ public class RadialCursor : Cursor
     private float updateRing(Frame frame)
     {
         //print(frame.GetHand(Settings.tracked_hand).PinchStrength);
-        return Mathf.Lerp(75, 25, Mathf.InverseLerp(Settings.pinch_distance + 20, Settings.pinch_distance, frame.GetHand(Settings.tracked_hand).PinchDistance));
+        return Mathf.Lerp(Settings.pinch_distance + 25, Settings.pinch_distance, Mathf.InverseLerp(Settings.pinch_distance + 20, Settings.pinch_distance, frame.GetHand(Settings.tracked_hand).PinchDistance));
     }
 }
